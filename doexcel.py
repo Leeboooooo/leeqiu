@@ -11,7 +11,7 @@
 
 from openpyxl import Workbook
 from openpyxl import load_workbook
-
+import getopt
 # wb = Workbook()
 
 # ws = wb.active
@@ -20,6 +20,17 @@ from openpyxl import load_workbook
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
+
+# opts, args = getopt.getopt(sys.argv[1:], "hi:o:") 
+# for op, value in opts: 
+#   if op == "-key1": 
+#     # print('key1 = %s' % value)
+#     print(value)
+#   elif op == "-key2": 
+#     # print('key2 = %s' % value)
+#     print(value)
+#   elif op == "-h": 
+#     sys.exit()
 
 fileName = r'D:/ghosttusng/RDExcel/1.xlsx'
 
@@ -81,7 +92,6 @@ def getTitleAndDatas(ws):
     cols = ws.max_column + 1
 
     for c in range(1, cols):
-        # print(ws.cell(1, c).value)
         tv = ws.cell(1, c).value
         titles.append(tv)
         newTitle.append(tv)
@@ -95,10 +105,16 @@ def getTitleAndDatas(ws):
         for c in range(1, cols):
             # dic = {}
             title = titles[c-1]
-            # print("index:%s  title:%s" % (c,title))
+            print("index:%s  title:%s value:%s" % (c,title,ws.cell(r, c).value))
             dic[title] = ws.cell(r, c).value
+            # print(dic)
             # rowData.append(dic)
-        # print(r, ">>>>>>>>>>>>>>>>>>>")
+        # if r > 3:
+        #     break
+        print(r, ">>>>>>>>>>>>>>>>>>>")
+        # ndic = sortedDictValues(dic)
+        # print(ndic)
+        # print(">>>>>>>>>>>>>>>>>>>")
         # print("\r\n")
         # print(rowData)
         # datas.append(rowData)
@@ -124,9 +140,6 @@ def do():
     # for o in range(len(datas2)):
     #     print(datas2[o])
     newSheetDatas.append(newTitle)
-    # appendToSheet(newSheetDatas,wb)
-
-    # return
 
     # print('表一表头：========')
     # for o in range(len(title1)):
@@ -141,10 +154,6 @@ def do():
     datas1Len = len(datas1)
     datas2Len = len(datas2)
     print('表1数据条数:%s,表2数据条数:%s' % (datas1Len,datas2Len))
-    # if datas1Len < datas2Len :
-    #     pacakgeDatas(datas1Len,datas1,datas2,title1,title2,wb)
-    # else:
-        # pacakgeDatas(datas2Len,datas2,datas1,title2,title1,wb)
     pacakgeDatas(datas1,datas2,title1,title2,wb)
     
     return
@@ -174,33 +183,26 @@ def pacakgeDatas(datas1,datas2,sheetTitle1,sheetTitle2,wb):
         key2CustomName =  sheetTitle2[3]
         key2Num =  sheetTitle2[7]
 
-        if rowDic1[key1Code] == rowDic2[key2Code] :
+        if rowDic1[key1Code] == rowDic2[key2Code] and rowDic1[key1CustomName] == rowDic2[key2CustomName] and rowDic1[key1Num] == rowDic2[key2Num]:
             print('index of the same data in EXCEL :%d' % (i+2))
-            # print(rowDic1[key1Code])
-            # print(rowDic1[key1CustomName])
-            # print(rowDic1[key1Num])
-            # print(rowDic2[sheetTitle2[1]])
             datas = []
-            for key in rowDic1:
+            for j in range(len(sheetTitle1)):
+                key = sheetTitle1[j]
                 datas.append(rowDic1[key])
-            for key in rowDic2:
-                # print(rowDic2[key])
+            # for key in rowDic1:
+            #     datas.append(rowDic1[key])
+            # for key in rowDic2:
+            for j0 in range(len(sheetTitle2)):
+                key = sheetTitle2[j0]
                 datas.append(rowDic2[key])
-            # appendToSheet(datas,wb)
             newSheetDatas.append(datas)
         else:
             print('index of the different data in EXCEL:%d' % (i+2))
-            # print(rowDic1[key1Code])
-            # print(rowDic1[key1CustomName])
-            # print(rowDic1[key1Num])
-            # print(rowDic2[key2Code])
-            # print(rowDic2[key2CustomName])
-            # print(rowDic2[key2Num])
             datas = []
-            for key in rowDic1:
+            for j in range(len(sheetTitle1)):
+                key = sheetTitle1[j]
                 datas.append(rowDic1[key])
-            # tail = pacakgeDatasForSheet(key1Code,sheetTitle1,sheetTitle2)
-            # datas.append(tail)
+
             for p in range(len(bankData2)):
                 datas.append(bankData2[p])
             newSheetDatas.append(datas)
@@ -209,7 +211,8 @@ def pacakgeDatas(datas1,datas2,sheetTitle1,sheetTitle2,wb):
             datasT = []
             for p in range(len(bankData1)):
                 datasT.append(bankData1[p])
-            for key in rowDic2:
+            for j0 in range(len(sheetTitle2)):
+                key = sheetTitle2[j0]
                 datasT.append(rowDic2[key])
             newSheetDatas.append(datasT)
             
@@ -223,7 +226,9 @@ def pacakgeDatas(datas1,datas2,sheetTitle1,sheetTitle2,wb):
                 datas.append(bankData2[p])
             
             leftDatas = datas2[lenth+k]
-            for key in leftDatas:
+            # for key in leftDatas:
+            for j0 in range(len(sheetTitle2)):
+                key = sheetTitle2[j0]
                 datas.append(leftDatas[key])
 
             newSheetDatas.append(datas)
@@ -232,7 +237,9 @@ def pacakgeDatas(datas1,datas2,sheetTitle1,sheetTitle2,wb):
             datas = []
             print('正常序号:%d,剩余序号:%d' % (k,lenth+idx))
             leftDatas = datas1[lenth+idx]
-            for key in leftDatas:
+            # for key in leftDatas:
+            for j0 in range(len(sheetTitle2)):
+                key = sheetTitle2[j0]
                 datas.append(leftDatas[key])
 
             for p in range(len(bankData1)):
@@ -266,15 +273,17 @@ def appendToSheet(datas,wb):
     wb.remove(wsNew)
     wsNew = wb.create_sheet("new")
 
-    # print('最后的数据===================')
-    # print(datas)
-    # wsNew.append(datas)
     for k in range(len(datas)):
-        print('存入数据===================')
-        print(datas[k])
+        # print('存入数据===================')
+        # print(datas[k])
         wsNew.append(datas[k])
     wb.save(fileName)
     return
+
+def sortedDictValues(adict):
+    keys = adict.keys()
+    keys.sort()
+    return map(adict.get, keys)
 
 # readExcel()
 do()
