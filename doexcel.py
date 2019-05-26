@@ -62,8 +62,8 @@ def readExcel():
     wsNew = wb.create_sheet("new")
     
 
-    for sheet in wb:
-        print(sheet.title)
+    # for sheet in wb:
+        # print(sheet.title)
 
     rows = ws.max_row + 1
     cols = ws.max_column + 1
@@ -73,12 +73,12 @@ def readExcel():
         for c in range(1, cols):
             arr.append(ws.cell(r, c).value)
 
-        print(arr)
+        # print(arr)
         wsNew.append(arr)
         
 
-        print(r, ">>>>>>>>>>>>>>>>>>>")
-        print("\r\n")
+        # print(r, ">>>>>>>>>>>>>>>>>>>")
+        # print("\r\n")
 
     wb.save(fileName)
     return
@@ -105,13 +105,13 @@ def getTitleAndDatas(ws):
         for c in range(1, cols):
             # dic = {}
             title = titles[c-1]
-            print("index:%s  title:%s value:%s" % (c,title,ws.cell(r, c).value))
+            # print("index:%s  title:%s value:%s" % (c,title,ws.cell(r, c).value))
             dic[title] = ws.cell(r, c).value
             # print(dic)
             # rowData.append(dic)
         # if r > 3:
         #     break
-        print(r, ">>>>>>>>>>>>>>>>>>>")
+        # print(r, ">>>>>>>>>>>>>>>>>>>")
         datas.append(dic)
 
     return titles,datas
@@ -155,96 +155,112 @@ def do():
 def pacakgeDatas(datas1,datas2,sheetTitle1,sheetTitle2,wb):
     datas1Len = len(datas1)
     datas2Len = len(datas2)
-    lenth = datas1Len
-    leftLenth = datas2Len - datas1Len
-    leftDatasFlag = 0 # 0-表示短的数据是datas1,1-表示短的数据是datas2
-    # if datas1Len > datas2Len :
-    #     lenth = datas2Len
-    #     leftLenth = datas1Len - datas2Len
-    #     leftDatasFlag = 1
-    
-    for i in range(lenth):
+    print('第一页有 %d 条，第二页有 %d 条' % (datas1Len,datas2Len))
+    sameDatas1 = []
+    sameDatas2 = []
+    for i in range(datas1Len):
         rowDic1 = datas1[i]
-        
-        # keyKey1 = [0,6,7]
-        # keyKey2 = [0,3,7]
         key1Code =  sheetTitle1[0]
         key1CustomName =  sheetTitle1[6]
         key1Num =  sheetTitle1[7]
-
+        isRecord = 0 #1-表示左表的值已经出现过对应的
         for sheet2idx in range(datas2Len):
             rowDic2 = datas2[sheet2idx]
             key2Code =  sheetTitle2[0]
             key2CustomName =  sheetTitle2[3]
             key2Num =  sheetTitle2[7]
+            
 
             if rowDic1[key1Code] == rowDic2[key2Code] and rowDic1[key1CustomName] == rowDic2[key2CustomName] and rowDic1[key1Num] == rowDic2[key2Num]:
-                print('index of the same data in EXCEL :%d' % (i+2))
-                datas = []
-                for j in range(len(sheetTitle1)):
-                    key = sheetTitle1[j]
-                    datas.append(rowDic1[key])
-                # for key in rowDic1:
-                #     datas.append(rowDic1[key])
-                # for key in rowDic2:
-                for j0 in range(len(sheetTitle2)):
-                    key = sheetTitle2[j0]
-                    datas.append(rowDic2[key])
-                newSheetDatas.append(datas)
-            else:
-                print('index of the different data in EXCEL:%d' % (i+2))
-                datas = []
-                for j in range(len(sheetTitle1)):
-                    key = sheetTitle1[j]
-                    datas.append(rowDic1[key])
+                print('\n左边表 [%d] 相同值标记前:%d' % (i+2,isRecord))
+                if isRecord == 0:
+                    isR = 'isR' in rowDic2.keys()
+                    print(isR)
+                    if isR:
+                        # print('右边表[%d] isR = %d' % (sheet2idx+2,rowDic2['isR']))
+                        # print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                        # print(datas2[sheet2idx])
+                        # print('右边表[%d]' % (sheet2idx+2))
+                        # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
+                        continue
+                    else:
+                        print('index of the same data in EXCEL1 :%d,index of 2:%d' % (i+2,sheet2idx+2))
+                        print('key1Code:%s,value1:%s,key1CustomName:%s,valueCustom:%s,key1Num:%s,valueNum:%s' % (key1Code,rowDic1[key1Code],key1CustomName,rowDic1[key1CustomName],key1Num,rowDic1[key1Num]))
+                        print('key2Code:%s,value2:%s,key2CustomName:%s,valueCustom2:%s,key2Num:%s,valueNum2:%s' % (key2Code,rowDic2[key2Code],key2CustomName,rowDic2[key2CustomName],key2Num,rowDic2[key2Num]))
+                        datas = []
+                        for j in range(len(sheetTitle1)):
+                            key = sheetTitle1[j]
+                            datas.append(rowDic1[key])
 
-                for p in range(len(bankData2)):
-                    datas.append(bankData2[p])
-                newSheetDatas.append(datas)
-                
+                        for j0 in range(len(sheetTitle2)):
+                            key = sheetTitle2[j0]
+                            datas.append(rowDic2[key])
 
-                datasT = []
-                for p in range(len(bankData1)):
-                    datasT.append(bankData1[p])
-                for j0 in range(len(sheetTitle2)):
-                    key = sheetTitle2[j0]
-                    datasT.append(rowDic2[key])
-                newSheetDatas.append(datasT)
+                        sameDatas1.append(rowDic1)
+                        sameDatas2.append(rowDic2)
+                        newSheetDatas.append(datas)
+                        isRecord = 1
+                        rowDic2['isR'] = 1
+                        # print('\n-----------------------------------')
+                        # print('右边表[%d]' % (sheet2idx+2))
+                        # print(datas2[sheet2idx])
+                        # print('-----------------------------------\n')
+                        continue
+                        
+                print('左边表 [%d] 相同值标记:%d' % (i+2,isRecord))
                 
-            print('========')
-    
-    # if leftDatasFlag == 0:
-    #     for k in range(leftLenth):
-    #         datas = []
-    #         print('正常序号:%d,剩余序号:%d' % (k,lenth+k))
-    #         for p in range(len(bankData2)):
-    #             datas.append(bankData2[p])
             
-    #         leftDatas = datas2[lenth+k]
-    #         # for key in leftDatas:
-    #         for j0 in range(len(sheetTitle2)):
-    #             key = sheetTitle2[j0]
-    #             datas.append(leftDatas[key])
+            # print(',.,..,.,\n')
+            # print(datas2[sheet2idx])
 
-    #         newSheetDatas.append(datas)
-    # else:
-    #     for idx in range(leftLenth):
-    #         datas = []
-    #         print('正常序号:%d,剩余序号:%d' % (k,lenth+idx))
-    #         leftDatas = datas1[lenth+idx]
-    #         # for key in leftDatas:
-    #         for j0 in range(len(sheetTitle2)):
-    #             key = sheetTitle2[j0]
-    #             datas.append(leftDatas[key])
 
-    #         for p in range(len(bankData1)):
-    #             datas.append(bankData1[p])
+    print('====第1页相同数据====\r\n')
+    print(len(sameDatas1))
+    print('====第1页相同数据====\r\n')
 
-    #         newSheetDatas.append(datas)
+    print('====第2页相同数据====\r\n')
+    print(len(sameDatas2))
+    print('====第2页相同数据====\r\n')
+
     
+
+    pacakgeDiffDatas(datas1,sameDatas1,sheetTitle1,1)
+    # newSheetDatas.append(datasLeft)
+    pacakgeDiffDatas(datas2,sameDatas2,sheetTitle2,0)
+    # newSheetDatas.append(datasRight)
+
+    # print('>>>>>存入sheet的数据<<<<<<\r\n')
     # print(newSheetDatas)
     appendToSheet(newSheetDatas,wb)
     return
+
+# 处理两页不同的数据。拼接到sameDatas后形成新的sheetDatas
+def pacakgeDiffDatas(datas,sameDatas,sheetTitle,left):
+    # print('总的表：\r\n')
+    # print(datas)
+    # print('相同数据的表：\r\n')
+    # print(sameDatas)
+    for i in range(len(sameDatas)):
+        # print('\n对比的数据[%d]' % i)
+        # print(sameDatas[i])
+        index = datas.index(sameDatas[i])
+        datas.pop(index)
+
+    print(len(datas))
+    for j in range(len(datas)):
+        d = []
+        if left == 1 :
+            for key in sheetTitle:
+                d.append(datas[j][key])
+            for p in range(len(bankData1)):
+                d.append(bankData1[p])
+        else:
+            for p in range(len(bankData2)):
+                d.append(bankData2[p])
+            for key in sheetTitle:
+                d.append(datas[j][key])
+        newSheetDatas.append(d)
+    # return sheetDatas
 
 def pacakgeDatasForSheet(keyCode,sheetTitle1,sheetTitle2):
     arr = []
