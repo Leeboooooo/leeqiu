@@ -3,3 +3,4 @@
 /dist
 /doexcel.exe
 *.spec
+*.xlsx
