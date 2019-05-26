@@ -2,4 +2,4 @@
 /build
 /dist
 /doexcel.exe
-/doexcel.spec
+*.spec

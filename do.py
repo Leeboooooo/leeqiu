@@ -32,7 +32,7 @@ sys.setdefaultencoding("utf-8")
 #   elif op == "-h": 
 #     sys.exit()
 
-fileName = r'D:/ghosttusng/RDExcel/1.xlsx'
+fileName = r'1.xlsx'
 
 title1 = []
 title2 = []
@@ -42,7 +42,7 @@ newSheetDatas = []
 bankData1 = []
 bankData2 = []
 
-def initWb():
+def initWb(fileName):
     wb = load_workbook(fileName)
     # print(wb.sheetnames)
     ws = wb.active
@@ -117,8 +117,8 @@ def getTitleAndDatas(ws):
     return titles,datas
 
 # 先获取两个sheet页面中的值，存入arr中，其中每个值又是一个dict
-def do():
-    wb,ws = initWb()
+def do(fileName):
+    wb,ws = initWb(fileName)
 
     ws1 = wb.get_sheet_by_name('1')
     ws2 = wb.get_sheet_by_name('2')
@@ -145,9 +145,9 @@ def do():
     # print('========')
 
     # 以数据少的为外层遍历，遍历完毕时如果有剩余，则继续添加新的数据到新表
-    datas1Len = len(datas1)
-    datas2Len = len(datas2)
-    print('表1数据条数:%s,表2数据条数:%s' % (datas1Len,datas2Len))
+    # datas1Len = len(datas1)
+    # datas2Len = len(datas2)
+    # print('表1数据条数:%s,表2数据条数:%s' % (datas1Len,datas2Len))
     pacakgeDatas(datas1,datas2,title1,title2,wb)
     
     return
@@ -155,7 +155,7 @@ def do():
 def pacakgeDatas(datas1,datas2,sheetTitle1,sheetTitle2,wb):
     datas1Len = len(datas1)
     datas2Len = len(datas2)
-    print('第一页有 %d 条，第二页有 %d 条' % (datas1Len,datas2Len))
+    # print('第一页有 %d 条，第二页有 %d 条' % (datas1Len,datas2Len))
     sameDatas1 = []
     sameDatas2 = []
     for i in range(datas1Len):
@@ -170,12 +170,11 @@ def pacakgeDatas(datas1,datas2,sheetTitle1,sheetTitle2,wb):
             key2CustomName =  sheetTitle2[3]
             key2Num =  sheetTitle2[7]
             
-
             if rowDic1[key1Code] == rowDic2[key2Code] and rowDic1[key1CustomName] == rowDic2[key2CustomName] and rowDic1[key1Num] == rowDic2[key2Num]:
-                print('\n左边表 [%d] 相同值标记前:%d' % (i+2,isRecord))
+                # print('\n左边表 [%d] 相同值标记前:%d' % (i+2,isRecord))
                 if isRecord == 0:
                     isR = 'isR' in rowDic2.keys()
-                    print(isR)
+                    # print(isR)
                     if isR:
                         # print('右边表[%d] isR = %d' % (sheet2idx+2,rowDic2['isR']))
                         # print('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!')
@@ -184,9 +183,10 @@ def pacakgeDatas(datas1,datas2,sheetTitle1,sheetTitle2,wb):
                         # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!\n')
                         continue
                     else:
-                        print('index of the same data in EXCEL1 :%d,index of 2:%d' % (i+2,sheet2idx+2))
-                        print('key1Code:%s,value1:%s,key1CustomName:%s,valueCustom:%s,key1Num:%s,valueNum:%s' % (key1Code,rowDic1[key1Code],key1CustomName,rowDic1[key1CustomName],key1Num,rowDic1[key1Num]))
-                        print('key2Code:%s,value2:%s,key2CustomName:%s,valueCustom2:%s,key2Num:%s,valueNum2:%s' % (key2Code,rowDic2[key2Code],key2CustomName,rowDic2[key2CustomName],key2Num,rowDic2[key2Num]))
+                        # print('index of the same data in EXCEL1 :%d,index of 2:%d' % (i+2,sheet2idx+2))
+                        print(' --------------- Progressing %.2f%%  --------------- ' % (i/float(datas1Len)*100))
+                        # print('key1Code:%s,value1:%s,key1CustomName:%s,valueCustom:%s,key1Num:%s,valueNum:%s' % (key1Code,rowDic1[key1Code],key1CustomName,rowDic1[key1CustomName],key1Num,rowDic1[key1Num]))
+                        # print('key2Code:%s,value2:%s,key2CustomName:%s,valueCustom2:%s,key2Num:%s,valueNum2:%s' % (key2Code,rowDic2[key2Code],key2CustomName,rowDic2[key2CustomName],key2Num,rowDic2[key2Num]))
                         datas = []
                         for j in range(len(sheetTitle1)):
                             key = sheetTitle1[j]
@@ -207,20 +207,20 @@ def pacakgeDatas(datas1,datas2,sheetTitle1,sheetTitle2,wb):
                         # print('-----------------------------------\n')
                         continue
                         
-                print('左边表 [%d] 相同值标记:%d' % (i+2,isRecord))
+                # print('左边表 [%d] 相同值标记:%d' % (i+2,isRecord))
                 
             
             # print(',.,..,.,\n')
             # print(datas2[sheet2idx])
 
 
-    print('====第1页相同数据====\r\n')
-    print(len(sameDatas1))
-    print('====第1页相同数据====\r\n')
+    # print('====第1页相同数据====\r\n')
+    # print(len(sameDatas1))
+    # print('====第1页相同数据====\r\n')
 
-    print('====第2页相同数据====\r\n')
-    print(len(sameDatas2))
-    print('====第2页相同数据====\r\n')
+    # print('====第2页相同数据====\r\n')
+    # print(len(sameDatas2))
+    # print('====第2页相同数据====\r\n')
 
     
 
@@ -246,7 +246,6 @@ def pacakgeDiffDatas(datas,sameDatas,sheetTitle,left):
         index = datas.index(sameDatas[i])
         datas.pop(index)
 
-    print(len(datas))
     for j in range(len(datas)):
         d = []
         if left == 1 :
@@ -289,6 +288,8 @@ def appendToSheet(datas,wb):
         # print(datas[k])
         wsNew.append(datas[k])
     wb.save(fileName)
+    print(' --------------- Progressing 100% --------------- ')
+    print(' --------------- DONE! --------------- ')
     return
 
 def sortedDictValues(adict):
@@ -296,6 +297,13 @@ def sortedDictValues(adict):
     keys.sort()
     return map(adict.get, keys)
 
+def test():
+    if len(sys.argv) < 2:
+        print('兄弟，输入要对比的文件地址，比如E://RDEXcel//1.xlsx')
+        return
+    fileName = sys.argv[1]
+    print(fileName)
+    do(fileName)
 # readExcel()
-do()
-
+do('1.xlsx')
+# test()
