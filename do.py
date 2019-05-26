@@ -120,8 +120,8 @@ def getTitleAndDatas(ws):
 def do(fileName):
     wb,ws = initWb(fileName)
 
-    ws1 = wb.get_sheet_by_name('1')
-    ws2 = wb.get_sheet_by_name('2')
+    ws1 = wb.get_sheet_by_name('发货明细')
+    ws2 = wb.get_sheet_by_name('销售明细')
 
     title1,datas1 = getTitleAndDatas(ws1)
     for g in range(len(title1)):
@@ -251,11 +251,11 @@ def pacakgeDiffDatas(datas,sameDatas,sheetTitle,left):
         if left == 1 :
             for key in sheetTitle:
                 d.append(datas[j][key])
-            for p in range(len(bankData1)):
-                d.append(bankData1[p])
-        else:
             for p in range(len(bankData2)):
                 d.append(bankData2[p])
+        else:
+            for p in range(len(bankData1)):
+                d.append(bankData1[p])
             for key in sheetTitle:
                 d.append(datas[j][key])
         newSheetDatas.append(d)
@@ -301,7 +301,7 @@ def test():
     if len(sys.argv) < 2:
         print('兄弟，输入要对比的文件地址，比如E://RDEXcel//1.xlsx')
         return
-    fileName = sys.argv[1]
+    fileName = sys.argv[1] + '.xlsx'
     print(fileName)
     do(fileName)
 # readExcel()
